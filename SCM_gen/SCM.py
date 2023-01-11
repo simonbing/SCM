@@ -11,7 +11,7 @@ import numpy as np
 import scipy
 from scipy.stats import uniform
 
-from ipcrl.data_gen import check_mechanism_signature, make_iterable
+from SCM_gen import check_mechanism_signature, make_iterable
 
 
 class CausalVar(object):
@@ -152,8 +152,7 @@ class Intervention(object):
                 if isinstance(new_mechanism[i],
                               (int, float)):  # do-Intervention
                     self.new_parents.append(None)
-                    self.new_noise_distr.append(
-                        None)  # None just means the old noise_distr is kept
+                    self.new_noise_distr.append(None)  # None just means the old noise_distr is kept
                     val = float(new_mechanism[i])
                     f_new = do_operator(val)
                     self.new_mechanism.append(f_new)
@@ -202,14 +201,14 @@ class SCM(metaclass=ABCMeta):
             original and intervened upon SCM
     """
     def __init__(self):
-        self.variables = self._get_variables()
+        self.variables = self._define_variables()
         assert all(isinstance(var, CausalVar) for var in self.variables), (
             "All SCM variables must be CausalVar objects!")
         self.intervention_flag = False
 
 
     @abstractmethod
-    def _get_variables(self) -> list[CausalVar]:
+    def _define_variables(self) -> list[CausalVar]:
         """
         Method to define causal variables and their mechanisms. Must be
         implemented in the derived child class!
@@ -241,7 +240,9 @@ class SCM(metaclass=ABCMeta):
 
         Returns:
             values: list[float]:
-                array of sampled values of causal variables
+                array of sampled values of causal variables,
+                output is a nested list of len(n_varibales) with each entry
+                containing n_samples
             noises [list[float]]:
                 array of sampled noise values
         """
