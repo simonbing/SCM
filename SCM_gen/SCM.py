@@ -176,7 +176,7 @@ class Intervention(object):
                     raise TypeError(F"new_mechanism and new_noise_distr at index {i} cannot both be None!")
 
 
-class SCM(metaclass=ABCMeta):
+class SCM(object):
     """
     Abstract structural causal model (SCM) metaclass. SCMs are implemented as
     children of this base class.
@@ -200,25 +200,32 @@ class SCM(metaclass=ABCMeta):
             intervene and draw a (paired) counterfactual sample from the
             original and intervened upon SCM
     """
-    def __init__(self):
-        self.variables = self._define_variables()
+    def __init__(self, variables):
+        """
+        Args:
+            variables: list(CausalVar):
+                Ordered list of the causal variables of the SCM.
+        """
+        self.variables = variables
         assert all(isinstance(var, CausalVar) for var in self.variables), (
             "All SCM variables must be CausalVar objects!")
+        # TODO get adjacency matrix from list of variables!
+
         self.intervention_flag = False
 
 
-    @abstractmethod
-    def _define_variables(self) -> list[CausalVar]:
-        """
-        Method to define causal variables and their mechanisms. Must be
-        implemented in the derived child class!
-        ___
-
-        Returns:
-            list[CausalVar]:
-                causal variables of the SCM in topological order
-        """
-        raise NotImplementedError
+    # @abstractmethod
+    # def _define_variables(self) -> list[CausalVar]:
+    #     """
+    #     Method to define causal variables and their mechanisms. Must be
+    #     implemented in the derived child class!
+    #     ___
+    #
+    #     Returns:
+    #         list[CausalVar]:
+    #             causal variables of the SCM in topological order
+    #     """
+    #     raise NotImplementedError
 
 
     def sample(self,
