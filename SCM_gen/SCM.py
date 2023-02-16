@@ -159,7 +159,7 @@ class Intervention(object):
                 elif inspect.isfunction(new_mechanism[i]):  # General mechanism Intervention
                     assert check_mechanism_signature(new_mechanism[i], new_parents[i]), (
                         F"new_mechanism at index {i} is not compatible with the number of new_parents!")
-                    # Even if parents stay constant for new mechanism, must explixcitly state them
+                    # Even if parents stay constant for new mechanism, must explicitly state them
                     self.new_parents.append(new_parents[i])
                     # If new_noise_distr is None the old noise_distr is kept
                     self.new_noise_distr.append(new_noise_distr[i])
