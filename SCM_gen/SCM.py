@@ -191,7 +191,7 @@ class SCM(metaclass=ABCMeta):
 
     Methods:
         sample:
-            draw a sample from the SCMs current distribution
+            draw a sample from the SCM's current distribution
         intervene:
             perform an intervention on the SCM
         intervent_sample:
