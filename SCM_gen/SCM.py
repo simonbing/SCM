@@ -11,7 +11,7 @@ import numpy as np
 import scipy
 from scipy.stats import uniform
 
-from SCM_gen import check_mechanism_signature, make_iterable
+from . import check_mechanism_signature, make_iterable
 
 
 class CausalVar(object):
