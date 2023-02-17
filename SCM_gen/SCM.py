@@ -210,9 +210,25 @@ class SCM(object):
         assert all(isinstance(var, CausalVar) for var in self.variables), (
             "All SCM variables must be CausalVar objects!")
         # TODO get adjacency matrix from list of variables!
+        self.adj_matrix = self._get_adj_matrix()
 
         self.intervention_flag = False
 
+    def _get_adj_matrix(self):
+        """
+        Returns:
+            adj_matrix: array of size (num_vars, num_vars)
+                The adjacency matrix of the SCM.
+        """
+        adj_matrix = np.zeros(shape=(len(self.variables), len(self.variables)),
+                              dtype=np.int)
+
+        for i, var in enumerate(self.variables):
+            if var.parents is not None:
+                parent_idxs = np.in1d(var.parents, self.variables).nonzero()[0]
+                adj_matrix[i, parent_idxs] = 1
+
+        return adj_matrix
 
     # @abstractmethod
     # def _define_variables(self) -> list[CausalVar]:
