@@ -248,12 +248,12 @@ class SCM(object):
                 counterfactual sampling
 
         Returns:
-            values: list[float]:
+            values: array:
                 array of sampled values of causal variables,
-                output is a nested list of len(n_varibales) with each entry
-                containing n_samples
-            noises [list[float]]:
-                array of sampled noise values
+                output is shape (n_samples, n_variables)
+            noises array:
+                array of sampled noise values, output is shape
+                (n_samples, n_variables)
         """
         if self.intervention_flag:
             logging.warning(
@@ -281,6 +281,10 @@ class SCM(object):
             var.value = value
             noises.append(noise)
             values.append(value)
+
+            # Transform to np arrays and reshape to (n_samples, n_variables)
+            noises = np.array(noises).transpose()
+            values = np.array(values).transpose()
 
             # Reset intervention_target flag
             var.intervention_target = False
