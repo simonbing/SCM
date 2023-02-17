@@ -209,7 +209,7 @@ class SCM(object):
         self.variables = variables
         assert all(isinstance(var, CausalVar) for var in self.variables), (
             "All SCM variables must be CausalVar objects!")
-        # TODO get adjacency matrix from list of variables!
+
         self.adj_matrix = self._get_adj_matrix()
 
         self.intervention_flag = False
@@ -229,20 +229,6 @@ class SCM(object):
                 adj_matrix[i, parent_idxs] = 1
 
         return adj_matrix
-
-    # @abstractmethod
-    # def _define_variables(self) -> list[CausalVar]:
-    #     """
-    #     Method to define causal variables and their mechanisms. Must be
-    #     implemented in the derived child class!
-    #     ___
-    #
-    #     Returns:
-    #         list[CausalVar]:
-    #             causal variables of the SCM in topological order
-    #     """
-    #     raise NotImplementedError
-
 
     def sample(self,
                n: int,
