@@ -282,12 +282,12 @@ class SCM(object):
             noises.append(noise)
             values.append(value)
 
-            # Transform to np arrays and reshape to (n_samples, n_variables)
-            noises = np.array(noises).transpose()
-            values = np.array(values).transpose()
-
             # Reset intervention_target flag
             var.intervention_target = False
+
+        # Transform to np arrays and reshape to (n_samples, n_variables)
+        noises = np.array(noises).transpose()
+        values = np.array(values).transpose()
 
         if not return_noise:
             return values
