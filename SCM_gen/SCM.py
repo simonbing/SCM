@@ -34,11 +34,6 @@ class CausalVar(object):
             value of noise taken during sampling
         value [float]:
             value of variable taken during sampling
-        seed: int
-            Random seed. Set to value other than None to obtain reproducible
-            samples.
-        rs: RandomState
-            numpy RandomState to sample from.
     """
     def __init__(self, parents, noise_distr, mechanism_fct, seed=None):
         assert ((isinstance(parents, Iterable) and
@@ -64,10 +59,6 @@ class CausalVar(object):
         # Assigned during sampling
         self.noise_value = None
         self.value = None
-
-        # Random seed for reproducibility
-        self.seed = seed
-        self.rs = numpy.random.RandomState(seed=self.seed)
 
 
 class Intervention(object):
@@ -109,7 +100,8 @@ class Intervention(object):
                          or list[scipy.stats.rv_continuous]]:
             new noise distribution
     """
-    def __init__(self, targets, new_mechanism=None, new_parents=None, new_noise_distr=None):
+    def __init__(self, targets, new_mechanism=None, new_parents=None,
+                 new_noise_distr=None):
         # Expand default None values to correct lengths if we have more than one target
         if hasattr(targets, '__len__'):
             n_targets = len(targets)
@@ -193,6 +185,11 @@ class SCM(object):
     ___
 
     Attributes:
+        seed: int
+            Random seed. Set to value other than None to obtain reproducible
+            samples.
+        rs: RandomState
+            numpy RandomState to sample from.
         variables [list[CausalVar]]:
             causal variables of the SCM
         intervention_flag [bool]:
@@ -210,12 +207,16 @@ class SCM(object):
             intervene and draw a (paired) counterfactual sample from the
             original and intervened upon SCM
     """
-    def __init__(self, variables):
+    def __init__(self, variables, seed=None):
         """
         Args:
             variables: list(CausalVar):
                 Ordered list of the causal variables of the SCM.
         """
+        # Random seed for reproducibility
+        self.seed = seed
+        self.rs = numpy.random.RandomState(seed=self.seed)
+
         self.variables = variables
         assert all(isinstance(var, CausalVar) for var in self.variables), (
             "All SCM variables must be CausalVar objects!")
