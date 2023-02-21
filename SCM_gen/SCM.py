@@ -8,6 +8,7 @@ import inspect
 import logging
 
 import numpy as np
+import numpy.random
 import scipy
 from scipy.stats import uniform
 
@@ -33,8 +34,13 @@ class CausalVar(object):
             value of noise taken during sampling
         value [float]:
             value of variable taken during sampling
+        seed: int
+            Random seed. Set to value other than None to obtain reproducible
+            samples.
+        rs: RandomState
+            numpy RandomState to sample from.
     """
-    def __init__(self, parents, noise_distr, mechanism_fct):
+    def __init__(self, parents, noise_distr, mechanism_fct, seed=None):
         assert ((isinstance(parents, Iterable) and
                  all(isinstance(parent, CausalVar) for parent in parents)) or
                 parents is None), "Parents of a variable must be list of CausalVar objects, or None!"
@@ -58,6 +64,10 @@ class CausalVar(object):
         # Assigned during sampling
         self.noise_value = None
         self.value = None
+
+        # Random seed for reproducibility
+        self.seed = seed
+        self.rs = numpy.random.RandomState(seed=self.seed)
 
 
 class Intervention(object):
@@ -265,11 +275,11 @@ class SCM(object):
         for i, var in enumerate(self.variables):
             if old_noises is not None:  # For counterfactual sampling
                 if var.intervention_target:  # Resample noise if variable is an intervention target
-                    noise = var.noise_distr.rvs(n)
+                    noise = var.noise_distr.rvs(n, random_state=self.rs)
                 else:
                     noise = old_noises[i]  # Take passed noise values for other variables
             else:  # Sample noise values
-                noise = var.noise_distr.rvs(n)
+                noise = var.noise_distr.rvs(n, random_state=self.rs)
 
             # Get values of parents
             if var.parents is not None:
